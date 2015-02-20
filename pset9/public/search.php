@@ -113,18 +113,27 @@
         // if both are set, validate that before is before and after is after
         if ($_POST['reportedafter'] !== "" && $_POST['reportedbefore'] !== "")
         {
-            $a_year = substr($reportedafter, 0, 4);
-            $a_month = substr($reportedafter, 5, -3);
-            $a_day = substr($reportedafter, 8);
-            $b_year = substr($reportedbefore, 0, 3);
-            $b_month = substr($reportedbefore, 5, -3);
-            $b_day = substr($reportedbefore, 8);
-            if (intval($b_year) <= intval($a_year) && intval($b_month) <= intval($a_month) && intval($b_day) <= intval($a_day))
+            // $a_year = substr($reportedafter, 0, 4);
+            // $a_month = substr($reportedafter, 5, -3);
+            // $a_day = substr($reportedafter, 8);
+            // $b_year = substr($reportedbefore, 0, 3);
+            // $b_month = substr($reportedbefore, 5, -3);
+            // $b_day = substr($reportedbefore, 8);
+            // if (intval($b_year) <= intval($a_year) && intval($b_month) <= intval($a_month) && intval($b_day) <= intval($a_day))
+            // {
+            //     apologize("Not a valid before and after date.");
+            // }
+            
+            if ($start < $end)
+            {
+                // $t = array('$gt' => $start, '$lte' => $end);
+                // say "yay"?                
+            }
+            else
             {
                 apologize("Not a valid before and after date.");
             }
-            // Now find documents with create_date between 1971 and 1999
-            $t = array('$gt' => $start, '$lte' => $end);
+            
             
         }
         
