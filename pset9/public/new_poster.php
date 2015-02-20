@@ -193,16 +193,88 @@
 		// compare new and old data
 		if ($_POST["petid"] !== "none") 
     	{
-    		// find old data
+	    	// find old data
 			$query = array("_id" => new MongoId($id));
-            
+	    
 	        $cursor = $c_posters->find($query);
 	        $cursor = $c_posters->count($query);
 	        if ($cursor === 1)
 	        {
-	        	$newdata = array('$set' => $data);
+	        	$newdata = array();
+	        	// narrow the update down to only what you need to update
+	        	if ($cursor["name"] !== $data["name"])
+	        	{
+	        		$newdata["name"] = $data["name"];
+	        	}
+	        	if ($cursor["id"] !== $data["id"])
+	        	{
+	        		$newdata["id"] = $data["id"];
+	        	}
+	        	if ($cursor["status"] !== $data["status"])
+	        	{
+	        		$newdata["status"] = $data["status"];
+	        	}
+	        	if ($cursor["reported"] !== $data["reported"])
+	        	{
+	        		$newdata["reported"] = $data["reported"];
+	        	}
+	        	if ($cursor["lat"] !== $data["lat"])
+	        	{
+	        		$newdata["lat"] = $data["lat"];
+	        	}
+	        	if ($cursor["lng"] !== $data["lng"])
+	        	{
+	        		$newdata["lng"] = $data["lng"];
+	        	}
+	        	if ($cursor["species"] !== $data["species"])
+	        	{
+	        		$newdata["species"] = $data["species"];
+	        	}
+	        	if ($cursor["breed"] !== $data["breed"])
+	        	{
+	        		$newdata["breed"] = $data["breed"];
+	        	}
+	        	if ($cursor["age"] !== $data["age"])
+	        	{
+	        		$newdata["age"] = $data["age"];
+	        	}
+	        	if ($cursor["gender"] !== $data["gender"])
+	        	{
+	        		$newdata["gender"] = $data["gender"];
+	        	}
+	        	if ($cursor["chip"] !== $data["chip"])
+	        	{
+	        		$newdata["chip"] = $data["chip"];
+	        	}
+	        	if ($cursor["weight"] !== $data["weight"])
+	        	{
+	        		$newdata["weight"] = $data["weight"];
+	        	}
+	        	if ($cursor["primarycolor"] !== $data["primarycolor"])
+	        	{
+	        		$newdata["primarycolor"] = $data["primarycolor"];
+	        	}
+	        	if ($cursor["secondarycolor"] !== $data["secondarycolor"])
+	        	{
+	        		$newdata["secondarycolor"] = $data["secondarycolor"];
+	        	}
+	        	if ($cursor["description"] !== $data["description"])
+	        	{
+	        		$newdata["description"] = $data["description"];
+	        	}
+	        	if ($cursor["phone"] !== $data["phone"])
+	        	{
+	        		$newdata["phone"] = $data["phone"];
+	        	}
+	        	if ($cursor["email"] !== $data["email"])
+	        	{
+	        		$newdata["email"] = $data["email"];
+	        	}
+	        	
+	        	// update
+	        	$cursor = array('$set' => $newdata);
 	        	// TODO TODO TODO
-	            $c_posters->update($query, $newdata);  // THIS IS NOT WORKING PROPERLY!!!!!
+	            $c_posters->update($query, $cursor);  // THIS IS NOT WORKING PROPERLY!!!!!
 	        }
 	     }
         else if ($_POST["petid"] === "none")
