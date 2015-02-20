@@ -6,7 +6,7 @@
     $cursor = "";
         
     // if form was submitted
-    if ($_SERVER["REQUEST_METHOD"] == "POST")
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_SESSION["id"]))
     {
         
         // define variables and set to empty values
@@ -175,48 +175,45 @@
         {
             apologize("Your email and confirmation must match.");
         }
-        
-        // REQUIRED
-        $username = $_SESSION["username"];
+        // assimulate new data
         $posted = new MongoDate();
-        
         $data = array("username" => $username, "posted" => $posted, "name" => $name, "id" => $id, "status" => $status, 
             "reported" => $reported, "lat" => $lat, "species" => $species, "breed" => $breed, "age" => $age, "gender" => $gender,
             "lng" => $lng, "chip" => $chip, "primarycolor" => $primarycolor, "weight" => $weight, "secondarycolor" => $secondarycolor, 
-            "description" => $description, "phone" => $phone, "email" => $email);
-        
+            "description" => $description, "phone" => $phone, "email" => $email); 
+        $id = test_input($_POST["petid"]);
+        $username = $_SESSION["username"];
         
         // connect to db
-        $cursor = array();
+   	    $cursor = array();
         $m = connect();
         $db = $m->$dbname;
-	    // Get the posters collection
-	    $c_posters = $db->posters;
-	    // insert into db
-	    if ($_POST["petid"] !== "none" && isset($_SESSION["id"])) 
-        {
-            $id = test_input($_POST["petid"]);
-            print_r($_POST["petid"]);
-            $query = array("_id" => new MongoId($id));
-            // update db
+		// Get the posters collection
+		$c_posters = $db->posters;
+		// compare new and old data
+		if ($_POST["petid"] !== "none") 
+    	{
+    		// find old data
+			$query = array("_id" => new MongoId($id));
+            
 	        $cursor = $c_posters->find($query);
-	        $cusor_count = $c_posters->count($query);
-	        if ($cursor_count === 1)
+	        $cursor = $c_posters->count($query);
+	        if ($cursor === 1)
 	        {
-	            $newdata = array('$set' => $data);
-	            $c_posters->update($query, $newdata);
-            }
-        }
-        else if ($_POST["petid"] === "none" && isset($_SESSION["id"]))
+	        	$newdata = array('$set' => $data);
+	        	// TODO TODO TODO
+	            $c_posters->update($query, $newdata);  // THIS IS NOT WORKING PROPERLY!!!!!
+	        }
+	     }
+        else if ($_POST["petid"] === "none")
         {
-            $c_posters->insert($data);            
-        }
+        	$c_posters->insert($data);	
+        }   
         
+		// disconnect from server
+    	$m->close();
+            
         
-             //
-        
-        // disconnect from server
-        $m->close();
         
         // TODO
             // pin a map for location lost at!
@@ -227,6 +224,12 @@
     }
     else
     {
+        if(!isset($_SESSION["id"]))
+        {
+        	apologize("You are not logged in properly. Log in and try again.");
+        	break;
+        }
+        
         // else render form
         render("poster_form.php", ["cursor" => $cursor, "title" => "New Poster"]);
     }
